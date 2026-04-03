@@ -6,7 +6,7 @@ from utils import ensure_dir, clean_mask, largest_contour_mask, save_rgba
 RAW_DIR = "data/raw"
 TEMPLATE_DIR = "data/templates"
 
-FRUITS = ["apple", "banana", "lime"]
+FRUITS = ["apple", "banana", "orange"]
 
 
 def remove_white_background(image):

@@ -6,7 +6,7 @@ This project detects and labels multiple fruit classes using classical computer 
 
 - apple
 - banana
-- lime
+- orange
 
 The detector is designed so a new fruit class can be added later by extending the HSV ranges and template references.
 
@@ -111,9 +111,3 @@ Typical failure cases:
 - cluttered backgrounds with fruit-like colours
 - yellow fruits with similar shape being confused without an extra class-specific rule
 
-## Suggested next improvements
-
-- add lemon as a fourth class with its own template references
-- split merged contours with distance transform + watershed
-- add an interactive annotation tool for faster ground-truth cleanup
-- compare this classical pipeline against a lightweight learned detector

@@ -1,5 +1,5 @@
 label,true_positive,false_positive,false_negative,precision,recall,f1
-apple,13,0,0,1.0,1.0,1.0
-banana,12,0,0,1.0,1.0,1.0
-lime,13,0,0,1.0,1.0,1.0
-overall,38,0,0,1.0,1.0,1.0
+apple,12,0,0,1.0,1.0,1.0
+banana,26,0,0,1.0,1.0,1.0
+orange,19,0,0,1.0,1.0,1.0
+overall,57,0,0,1.0,1.0,1.0

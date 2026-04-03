@@ -15,11 +15,11 @@ MASK_DIR = "output/masks"
 METRICS_DIR = "output/metrics"
 PREDICTION_FILE = os.path.join(METRICS_DIR, "predictions.csv")
 
-FRUIT_ORDER = ["apple", "banana", "lime"]
+FRUIT_ORDER = ["apple", "banana", "orange"]
 CLASS_COLORS = {
     "apple": (0, 0, 255),
     "banana": (0, 215, 255),
-    "lime": (0, 200, 0),
+    "orange": (0, 165, 255),
     "unknown": (255, 255, 255),
 }
 COLOR_RANGES = {
@@ -30,8 +30,8 @@ COLOR_RANGES = {
     "banana": [
         (np.array([18, 70, 70], dtype=np.uint8), np.array([35, 255, 255], dtype=np.uint8)),
     ],
-    "lime": [
-        (np.array([32, 55, 45], dtype=np.uint8), np.array([90, 255, 255], dtype=np.uint8)),
+    "orange": [
+        (np.array([10, 50, 50], dtype=np.uint8), np.array([25, 255, 255], dtype=np.uint8)),
     ],
 }
 WHITE_LOWER = np.array([0, 0, 140], dtype=np.uint8)
@@ -131,7 +131,7 @@ def load_template_references(template_dir=TEMPLATE_DIR):
             "solidity": median(item["solidity"] for item in values),
             "apple_ratio": median(item.get("apple_ratio", 0.0) for item in values),
             "banana_ratio": median(item.get("banana_ratio", 0.0) for item in values),
-            "lime_ratio": median(item.get("lime_ratio", 0.0) for item in values),
+            "orange_ratio": median(item.get("orange_ratio", 0.0) for item in values),
         }
 
     return references
@@ -154,7 +154,7 @@ def score_against_reference(features, fruit, references):
     weights = {
         "apple": (0.28, 0.10, 0.24, 0.18, 0.20),
         "banana": (0.08, 0.30, 0.12, 0.15, 0.35),
-        "lime": (0.22, 0.10, 0.28, 0.15, 0.25),
+        "orange": (0.22, 0.10, 0.28, 0.15, 0.25),
     }[fruit]
 
     return (
@@ -169,19 +169,19 @@ def score_against_reference(features, fruit, references):
 def candidate_labels(features):
     apple_ratio = features["apple_ratio"]
     banana_ratio = features["banana_ratio"]
-    lime_ratio = features["lime_ratio"]
+    orange_ratio = features["orange_ratio"]
     labels = []
 
     if apple_ratio >= 0.18 and features["solidity"] >= 0.68 and features["circularity"] >= 0.30:
         labels.append("apple")
     if banana_ratio >= 0.14 and features["aspect_ratio"] >= 1.4 and features["solidity"] >= 0.4:
         labels.append("banana")
-    if lime_ratio >= 0.12 and features["circularity"] >= 0.38 and features["solidity"] >= 0.58:
-        labels.append("lime")
+    if orange_ratio >= 0.12 and features["circularity"] >= 0.38 and features["solidity"] >= 0.58:
+        labels.append("orange")
 
     # Resolve very mixed regions by favouring the strongest colour explanation.
     if len(labels) > 1:
-        ratios = {"apple": apple_ratio, "banana": banana_ratio, "lime": lime_ratio}
+        ratios = {"apple": apple_ratio, "banana": banana_ratio, "orange": orange_ratio}
         strongest = max(labels, key=lambda label: ratios[label])
         labels = [strongest] + [label for label in labels if label != strongest and ratios[label] >= ratios[strongest] * 0.85]
 
@@ -256,8 +256,8 @@ def is_reliable_detection(det):
         return det["score"] >= 0.72 and det["apple_ratio"] >= 0.18 and det["aspect_ratio"] <= 1.85 and (det["circularity"] >= 0.45 or area >= 15000)
     if label == "banana":
         return det["score"] >= 0.72 and det["banana_ratio"] >= 0.14 and det["aspect_ratio"] >= 1.45
-    if label == "lime":
-        return det["score"] >= 0.72 and det["lime_ratio"] >= 0.12 and det["aspect_ratio"] <= 2.1 and det["circularity"] >= 0.42
+    if label == "orange":
+        return det["score"] >= 0.72 and det["orange_ratio"] >= 0.12 and det["aspect_ratio"] <= 2.1 and det["circularity"] >= 0.42
     return False
 
 
@@ -335,7 +335,7 @@ def write_predictions(prediction_file, rows):
         "solidity",
         "apple_ratio",
         "banana_ratio",
-        "lime_ratio",
+        "orange_ratio",
         "dominant_hue",
         "touches_edge",
         "source",
@@ -392,7 +392,7 @@ def main():
                     "solidity": round(det["solidity"], 4),
                     "apple_ratio": round(det["apple_ratio"], 4),
                     "banana_ratio": round(det["banana_ratio"], 4),
-                    "lime_ratio": round(det["lime_ratio"], 4),
+                    "orange_ratio": round(det["orange_ratio"], 4),
                     "dominant_hue": round(det["dominant_hue"], 2),
                     "touches_edge": int(det["touches_edge"]),
                     "source": det["source"],
